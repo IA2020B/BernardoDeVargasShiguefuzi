@@ -7,7 +7,8 @@ enum {
 	PERSUE, 
 	FLEE, 
 	MOVE,
-	NEW_DIRECTION}
+	NEW_DIRECTION,
+	DETECTION}
 
 # Váriaveis 
 const SPEED = 100
@@ -43,7 +44,6 @@ func _process(delta):
 		# Se mova na direção atual
 		MOVE:
 			move(delta)
-			#print ("Moving") --> Teste; ignone
 		
 		# Escolha uma nova direção
 		NEW_DIRECTION:
@@ -51,7 +51,10 @@ func _process(delta):
 			direction = choose([Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN])
 			# Escolha um novo estado
 			state = choose([IDDLE, MOVE])
-			#print ("New direction") --> Teste; ignore
+		
+		# Detecte o jogador
+		DETECTION:
+			pass
 
 # Função de movimento
 func move(delta):
@@ -69,3 +72,9 @@ func _on_Timer_timeout():
 	# Pegue o timer na árvore e escolha
 	$Timer.wait_time = choose([0.5, 1, 1.5])
 	state = choose([IDDLE, MOVE, NEW_DIRECTION])
+
+# Função de detecção de jogador (sinal)
+func _on_DetectionRange_body_entered(body):
+	if body.name == "Player":
+		target = body
+		print ("Player found")
