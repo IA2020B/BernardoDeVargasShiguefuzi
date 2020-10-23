@@ -35,7 +35,7 @@ func _process(delta):
 		
 		# Persiga o jogador 
 		PERSUE:
-			pass
+			persue_player()
 		
 		# Fuja do jogador 
 		FLEE:
@@ -54,7 +54,7 @@ func _process(delta):
 		
 		# Detecte o jogador
 		DETECTION:
-			pass
+			_on_DetectionRange_body_entered(target)
 
 # Função de movimento
 func move(delta):
@@ -69,12 +69,17 @@ func choose(array):
 
 # Função de tempo (sinal)
 func _on_Timer_timeout():
-	# Pegue o timer na árvore e escolha
+	# Pegue o timer na árvore e escolha novo estado
 	$Timer.wait_time = choose([0.5, 1, 1.5])
 	state = choose([IDDLE, MOVE, NEW_DIRECTION])
 
 # Função de detecção de jogador (sinal)
 func _on_DetectionRange_body_entered(body):
+	# Se o nome do objeto que entrou
 	if body.name == "Player":
 		target = body
-		print ("Player found")
+		state = PERSUE
+
+# Função p/ perseguir o jogador
+func persue_player():
+	print ("Get Him!")
