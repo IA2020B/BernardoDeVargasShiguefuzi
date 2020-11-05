@@ -1,5 +1,12 @@
 extends KinematicBody2D
-# Esse é o script dos inimigos. Contem uma máquina de estados finitos
+# ------------------------------------------- 
+# Este é o script para os inimigos. Contém uma máquina de estados finitos que 
+# governam a IA deles (7 estados: PARADO, ATACAR, PERSEGUIR, DETECTAR, FUGIR, 
+# LOCOMOVER e ESCOLHER NOVA DIREÇÃO).
+# -------------------------------------------
+# Estados completos: IDDLE, MOVE, NEW_DIRECTION, DETECTION
+# Estados a serem feitos: ATTACK, CHASE, FLEE
+# -------------------------------------------
 
 # Enum dos estados finitos
 enum {
@@ -13,25 +20,31 @@ enum {
 
 # Váriaveis 
 const SPEED = 100
-var state = MOVE
+var state = NEW_DIRECTION
 var direction = Vector2.ZERO
 var target = null
+
+# Node do jogador
+onready var player = get_parent().get_node_and_resource("/root/Room/Player")
 
 # Função p/ quando o nodo entra em cena
 func _ready():
 	# Seed aleatória (p/ estados)
 	randomize()
+	#print(player) --> Ignore
 
 # Função de processo (por tempo)
 func _process(delta):
-	# Estados (0)
+	# Estados
 	match state:
 		# Parado
 		IDDLE:
 			pass
 		
+		# Atacar
 		ATTACK:
-			attack_player()
+			#attack_player(delta)
+			pass
 		
 		# Perseguir
 		CHASE:
@@ -54,10 +67,13 @@ func _process(delta):
 		NEW_DIRECTION:
 			direction = choose([Vector2.UP, Vector2.DOWN, Vector2.RIGHT, Vector2.LEFT])
 			state = choose([IDDLE, MOVE])
+	
+	#print(state) --> Ignore
 
 # Função de movimento
 func move (delta):
 	position += direction * SPEED * delta
+# warning-ignore:return_value_discarded
 	move_and_collide(direction)
 
 # Função de escolha
@@ -72,15 +88,16 @@ func _on_Timer_timeout():
 	$Timer.wait_time = choose([0.5, 1, 1.5])
 	state = choose([IDDLE, MOVE, NEW_DIRECTION])
 
-# Função para detectar quando o jogador entra no circulo de deteção
+# Função para detectar quando o jogador entra no circulo de deteção (sinal)
 func _on_DetectionRange_body_entered(body):
 	if body.name == "Player":
 		target = body
+		#print(target) --> Ignore
 
-# Função para atacar o jogador
-func attack_player():
-	pass
+# TODO: Função para atacar o jogador (comentário do programador: AAAAAARRRRRGGHH ACABE COM MEU SOFRIMENTO)
+func attack_player(delta):
+	target = player
 
-# Função para quando o jogador sair do campo de detecção
+# TODO: Função para quando o jogador sair do campo de detecção
 func _on_DetectionRange_body_exited(body):
 	pass

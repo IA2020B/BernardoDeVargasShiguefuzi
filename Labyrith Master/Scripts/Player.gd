@@ -1,4 +1,7 @@
 extends KinematicBody2D
+# -------------------------------------------
+# Este é o script do jogador. Contém movimentação de personagem. 
+# -------------------------------------------
 
 # Váriaveis de movimento
 var MAX_SPEED = 250
@@ -34,7 +37,7 @@ func get_input_axis():
 
 # Função de fricção de movimento
 func apply_friction(amount):
-	# Se movimento for maior que amount, reduza o movimento
+	# Se movimento for maior que quantidade, reduza o movimento
 	# Se não, movimento é (0,0)
 	if motion.length() > amount:
 		motion -= motion.normalized() * amount
